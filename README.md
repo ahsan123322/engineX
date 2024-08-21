@@ -1,21 +1,3 @@
-Metadata-Version: 2.1
-Name: SynapseAI
-Version: 0.3.2
-Description-Content-Type: text/markdown
-Requires-Dist: streamlit
-Requires-Dist: requests
-Requires-Dist: beautifulsoup4
-Requires-Dist: pandas
-Requires-Dist: docx2txt
-Requires-Dist: langchain
-Requires-Dist: langchain_community
-Requires-Dist: langchain_text_splitters
-Requires-Dist: faiss-cpu
-Requires-Dist: numpy
-Requires-Dist: Pillow
-Requires-Dist: pytesseract
-Requires-Dist: PyPDF2
-
 
 # SynapseAI: Semantic Search Without LLMs
 
@@ -70,7 +52,7 @@ To crawl a website and fetch its content:
 from SynapseAI.web_crawler import WebCrawler
 
 # Crawl a website
-crawler = WebCrawler("https://www.example.com")
+url = WebCrawler("https://www.example.com")
 content = crawler.fetch_content()
 ```
 
@@ -79,11 +61,14 @@ content = crawler.fetch_content()
 To process the content fetched from the website:
 
 ```python
+
+from SynapseAI.utils import process_chunks
 from langchain.schema import Document as LangChainDocument
 
-document = LangChainDocument(page_content=content, metadata={"source": "https://www.example.com"})
-chunks = data_loader.chunk_document([document], chunk_size=1024, chunk_overlap=80)
+document = LangChainDocument(page_content=content, metadata={"source": url})
+chunks = DataLoader("").chunk_document([document], chunk_size=1024, chunk_overlap=80)
 process_chunks(chunks)
+
 ```
 
 ### Semantic Search
@@ -105,6 +90,7 @@ query_embedding = embeddings.embed_query(query)
 
 # Reconstruct the document embeddings
 from SynapseAI.utils import FAISS
+# Pass the chunks you made 
 vectorstore = FAISS.from_documents(documents=chunks, embedding=embeddings)
 document_embeddings = vectorstore.index.reconstruct_n(0, vectorstore.index.ntotal)
 
