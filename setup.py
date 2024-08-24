@@ -5,10 +5,9 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="SynapseAI",
-    version="0.3.3",
+    version="0.5.5",
     packages=find_packages(),
     install_requires=[
-        'streamlit',
         'requests',
         'beautifulsoup4',
         'pandas',

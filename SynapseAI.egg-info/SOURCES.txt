@@ -1,9 +1,9 @@
 README.md
 setup.py
 SynapseAI/__init__.py
-SynapseAI/data_loader.py
-SynapseAI/document_processor.py
+SynapseAI/config.py
 SynapseAI/main.py
+SynapseAI/pdf_processor.py
 SynapseAI/utils.py
 SynapseAI/web_crawler.py
 SynapseAI.egg-info/PKG-INFO

@@ -1,8 +1,7 @@
 Metadata-Version: 2.1
 Name: SynapseAI
-Version: 0.3.3
+Version: 0.5.5
 Description-Content-Type: text/markdown
-Requires-Dist: streamlit
 Requires-Dist: requests
 Requires-Dist: beautifulsoup4
 Requires-Dist: pandas
@@ -17,121 +16,159 @@ Requires-Dist: pytesseract
 Requires-Dist: PyPDF2
 
 
-# SynapseAI: Semantic Search Without LLMs
+# SynapseAI
 
-This package provides an AI-powered document semantic search system that doesn't rely on large language models (LLMs). It allows you to process documents, web content, and scanned images, and then perform efficient semantic searches using cosine similarity.
+SynapseAI is a Python package for semantic search in PDF documents and web pages. It allows users to extract relevant information from PDFs and websites based on natural language queries.
 
 ## Installation
 
-Install the package using pip:
+You can install SynapseAI using pip:
 
 ```bash
-pip install SynapseAI
+pip install synapseai
 ```
 
-#### Load a Document
+## Usage
 
-To load a document (PDF, DOCX, TXT, XLS, XLSX):
+synapseai provides two main functions: `process_pdf` for analyzing PDF documents and `crawl_and_query` for searching web pages.
+
+### Processing a PDF
+
+To search within a PDF document:
 
 ```python
-from SynapseAI.data_loader import DataLoader
+from synapseai import process_pdf
 
-# Load a document
-data_loader = DataLoader("path/to/document.pdf")
-documents = data_loader.load_document()
+pdf_path = "path/to/your/document.pdf"
+query = "What is the main topic of this document?"
+
+results = process_pdf(pdf_path, query)
+
+for chunk, similarity in results:
+    print(f"Similarity: {similarity:.4f}")
+    print(f"Chunk: {chunk[:200]}...")
+    print("-" * 50)
 ```
 
-#### Chunk the Document
+### Crawling and Querying a Web Page
 
-To chunk the document into smaller pieces:
+To search the content of a web page:
 
 ```python
-# Chunk the document into smaller pieces
-chunks = data_loader.chunk_document(documents, chunk_size=1024, chunk_overlap=80)
+from synapseai import crawl_and_query
+
+url = "https://example.com"
+query = "What services does this website offer?"
+
+results = crawl_and_query(url, query)
+
+for chunk, similarity in results:
+    print(f"Similarity: {similarity:.4f}")
+    print(f"Chunk: {chunk[:200]}...")
+    print("-" * 50)
 ```
 
-#### Process the Chunks
+Both functions return a list of tuples, where each tuple contains a relevant text chunk and its similarity score to the query.
 
-This step creates embeddings for the document chunks and builds a FAISS index for efficient similarity search:
+## Configuration
+
+synapseai can be customized by modifying the `config.py` file in the package directory. Here are the available configuration options:
+
+### Embedding Model
+
+- **Variable:** `EMBEDDING_MODEL`
+- **Default:** `"sentence-transformers/all-MiniLM-L6-v2"`
+- **Description:** The name of the Hugging Face model used for text embeddings.
+
+### Text Chunking
+
+- **Variables:** `CHUNK_SIZE` and `CHUNK_OVERLAP`
+- **Defaults:** `CHUNK_SIZE = 1024`, `CHUNK_OVERLAP = 80`
+- **Description:** Control how the text is split into chunks for processing.
+  - **CHUNK_SIZE:** Maximum number of characters in each chunk.
+  - **CHUNK_OVERLAP:** Number of characters that overlap between consecutive chunks.
+
+### Search Results
+
+- **Variable:** `TOP_K_RESULTS`
+- **Default:** `5`
+- **Description:** The number of top results to return from the semantic search.
+
+### How to Modify Configuration
+
+To change these settings, locate the `config.py` file in your synapseai installation directory and edit the values. For example:
 
 ```python
-from SynapseAI.utils import process_chunks
+# config.py
 
-process_chunks(chunks)
+EMBEDDING_MODEL = "sentence-transformers/all-mpnet-base-v2"
+CHUNK_SIZE = 2048
+CHUNK_OVERLAP = 100
+TOP_K_RESULTS = 10
 ```
 
-### Web Crawling
+After modifying the config file, restart your Python environment or reload the synapseai package for the changes to take effect.
 
-#### Crawl a Website
+### Viewing Current Configuration
 
-To crawl a website and fetch its content:
+You can view the current configuration settings in your Python script or interactive session:
 
 ```python
-from SynapseAI.web_crawler import WebCrawler
+import synapseai
 
-# Crawl a website
-url = WebCrawler("https://www.example.com")
-content = crawler.fetch_content()
+synapseai.print_config()
 ```
 
-#### Process the Crawled Content
+This will display the current values of all configuration options.
 
-To process the content fetched from the website:
+## Examples
+
+### Analyzing a Research Paper
 
 ```python
+from synapseai import process_pdf
 
-from SynapseAI.utils import process_chunks
-from langchain.schema import Document as LangChainDocument
+pdf_path = "research_paper.pdf"
+query = "What are the key findings of this research?"
 
-document = LangChainDocument(page_content=content, metadata={"source": url})
-chunks = DataLoader("").chunk_document([document], chunk_size=1024, chunk_overlap=80)
-process_chunks(chunks)
+results = process_pdf(pdf_path, query)
 
+print("Key findings from the research paper:")
+for chunk, similarity in results:
+    print(f"Relevance: {similarity:.2f}")
+    print(chunk)
+    print("-" * 50)
 ```
 
-### Semantic Search
-
-#### Perform a Semantic Search
-
-To perform a semantic search using the FAISS index and retrieve the top matching document chunks:
+### Extracting Information from a Company Website
 
 ```python
-from SynapseAI.utils import cosine_similarity, load_embeddings
-import numpy as np
+from synapseai import crawl_and_query
 
-# Load the embeddings
-embeddings = load_embeddings()
+url = "https://www.company.com/about"
+query = "What is the company's mission statement?"
 
-# Define a query
-query = "What is the main topic of the document?"
-query_embedding = embeddings.embed_query(query)
+results = crawl_and_query(url, query)
 
-# Reconstruct the document embeddings
-from SynapseAI.utils import FAISS
-# Pass the chunks you made 
-vectorstore = FAISS.from_documents(documents=chunks, embedding=embeddings)
-document_embeddings = vectorstore.index.reconstruct_n(0, vectorstore.index.ntotal)
-
-# Calculate similarities and get the top results
-similarities = [cosine_similarity(query_embedding, doc_embedding) for doc_embedding in document_embeddings]
-top_k_indices = np.argsort(similarities)[-5:][::-1]
-
-for i, idx in enumerate(top_k_indices):
-    doc = vectorstore.docstore.search(vectorstore.index_to_docstore_id[idx])
-    print(f"Match {i+1} - Similarity: {similarities[idx]:.4f}")
-    print(doc.page_content)
+print("Company mission statement:")
+for chunk, similarity in results:
+    if similarity > 0.8:  # Only print highly relevant results
+        print(chunk)
+        break
 ```
 
-This example shows how to load the embeddings, perform a semantic search using the FAISS index, and retrieve the top matching document chunks.
+## Troubleshooting
 
-## Customization
+If you encounter any issues:
 
-You can customize the behavior of the document processing by adjusting the `chunk_size` and `chunk_overlap` parameters when calling the `chunk_document()` method. Larger chunk sizes provide more context, while smaller chunks can improve search precision.
+- Ensure you have the latest version of synapseai installed.
+- Check that all dependencies are correctly installed.
+- Verify that the PDF file or URL you're trying to access is valid and accessible.
+- If you've modified the configuration, try reverting to default settings.
 
-## Contributing
-
-Contributions are welcome! If you encounter any issues or have suggestions for improvements, please feel free to open an issue or submit a pull request.
+For persistent issues, please open an issue on our GitHub repository.
+https://github.com/FastianAbdullah/Synapse-AI
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the `LICENSE` file for details.
