@@ -1,43 +1,29 @@
 Metadata-Version: 2.1
-Name: SynapseAI
-Version: 0.5.5
+Name: engineX
+Version: 0.5.6
 Description-Content-Type: text/markdown
-Requires-Dist: requests
-Requires-Dist: beautifulsoup4
-Requires-Dist: pandas
-Requires-Dist: docx2txt
-Requires-Dist: langchain
-Requires-Dist: langchain_community
-Requires-Dist: langchain_text_splitters
-Requires-Dist: faiss-cpu
-Requires-Dist: numpy
-Requires-Dist: Pillow
-Requires-Dist: pytesseract
-Requires-Dist: PyPDF2
 
+# engineX
 
-# SynapseAI
-
-SynapseAI is a Python package for semantic search in PDF documents and web pages. It allows users to extract relevant information from PDFs and websites based on natural language queries.
+engineX is a Python package for semantic search in PDF documents and web pages. It allows users to extract relevant information from PDFs and websites based on natural language queries.
 
 ## Installation
 
-You can install SynapseAI using pip:
+You can install engineX using pip:
 
-```bash
-pip install synapseai
-```
+````bash
+pip install engineX
 
 ## Usage
 
-synapseai provides two main functions: `process_pdf` for analyzing PDF documents and `crawl_and_query` for searching web pages.
+engineX provides two main functions: `process_pdf` for analyzing PDF documents and `crawl_and_query` for searching web pages.
 
 ### Processing a PDF
 
 To search within a PDF document:
 
 ```python
-from synapseai import process_pdf
+from engineX import process_pdfx
 
 pdf_path = "path/to/your/document.pdf"
 query = "What is the main topic of this document?"
@@ -48,14 +34,14 @@ for chunk, similarity in results:
     print(f"Similarity: {similarity:.4f}")
     print(f"Chunk: {chunk[:200]}...")
     print("-" * 50)
-```
+````
 
 ### Crawling and Querying a Web Page
 
 To search the content of a web page:
 
 ```python
-from synapseai import crawl_and_query
+from engineX import crawl_and_query
 
 url = "https://example.com"
 query = "What services does this website offer?"
@@ -72,7 +58,7 @@ Both functions return a list of tuples, where each tuple contains a relevant tex
 
 ## Configuration
 
-synapseai can be customized by modifying the `config.py` file in the package directory. Here are the available configuration options:
+engineX can be customized by modifying the `config.py` file in the package directory. Here are the available configuration options:
 
 ### Embedding Model
 
@@ -96,7 +82,7 @@ synapseai can be customized by modifying the `config.py` file in the package dir
 
 ### How to Modify Configuration
 
-To change these settings, locate the `config.py` file in your synapseai installation directory and edit the values. For example:
+To change these settings, locate the `config.py` file in your engineX installation directory and edit the values. For example:
 
 ```python
 # config.py
@@ -107,16 +93,16 @@ CHUNK_OVERLAP = 100
 TOP_K_RESULTS = 10
 ```
 
-After modifying the config file, restart your Python environment or reload the synapseai package for the changes to take effect.
+After modifying the config file, restart your Python environment or reload the engineX package for the changes to take effect.
 
 ### Viewing Current Configuration
 
 You can view the current configuration settings in your Python script or interactive session:
 
 ```python
-import synapseai
+import engineX
 
-synapseai.print_config()
+engineX.print_config()
 ```
 
 This will display the current values of all configuration options.
@@ -126,7 +112,7 @@ This will display the current values of all configuration options.
 ### Analyzing a Research Paper
 
 ```python
-from synapseai import process_pdf
+from engineX import process_pdf
 
 pdf_path = "research_paper.pdf"
 query = "What are the key findings of this research?"
@@ -143,7 +129,7 @@ for chunk, similarity in results:
 ### Extracting Information from a Company Website
 
 ```python
-from synapseai import crawl_and_query
+from engineX import crawl_and_query
 
 url = "https://www.company.com/about"
 query = "What is the company's mission statement?"
@@ -161,13 +147,12 @@ for chunk, similarity in results:
 
 If you encounter any issues:
 
-- Ensure you have the latest version of synapseai installed.
+- Ensure you have the latest version of engineX installed.
 - Check that all dependencies are correctly installed.
 - Verify that the PDF file or URL you're trying to access is valid and accessible.
 - If you've modified the configuration, try reverting to default settings.
 
 For persistent issues, please open an issue on our GitHub repository.
-https://github.com/FastianAbdullah/Synapse-AI
 
 ## License
 

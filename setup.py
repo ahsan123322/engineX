@@ -4,8 +4,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="SynapseAI",
-    version="0.5.5",
+    name="engineX",
+    version="0.5.6",
     packages=find_packages(),
     install_requires=[
         'requests',
@@ -23,7 +23,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'SynapseAI=SynapseAI.main:main',
+            'enginex=enginex.main:main',
         ],
     },
     long_description=long_description,

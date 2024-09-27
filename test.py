@@ -1,8 +1,8 @@
-from SynapseAI import process_pdf, crawl_and_query,config
+from enginex import process_pdf, crawl_and_query,config
 
 # Example 1: Processing a PDF
 pdf_path = "Chap.pdf"
-pdf_query = "What is the main topic of this document?"
+pdf_query = "Formal Document?"
 
 pdf_results = process_pdf(pdf_path, pdf_query)
 
